@@ -57,24 +57,20 @@ function inSession(intent, session, callback) {
               json: {
                 'user-id': 1,
                 'name': partyName,
-                'threshold': 6
+                'threshold': 5
               }
           };
-
 
           request(url, function(error, response, body) {
               if (error !== null) {
                   console.error("ERROR: " + error);
               }
-              console.info("RESPONSE: " + response);
               console.log(body);
-              console.log(response.statusCode);
               var data = body;
-              console.log(data['name']);
               var confirmedParty = data['name'];
               var speechOutput = "<speak><p>" + confirmedParty + "was successfully created.</p></speak>";
               var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-              callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+              callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
             });
           break;
 
@@ -84,28 +80,27 @@ function inSession(intent, session, callback) {
               var url = {
                   url: host + route,
                   method: 'GET',
-                  params: {
+                  json:{
                     'name': partyName
                   }
               };
+
               request(url, function(error, response, body) {
                   if (error !== null) {
                       console.error("ERROR: " + error);
                   }
-                  console.info("RESPONSE: " + response);
-                  console.info("BODY: " + body);
-                  var data = JSON.parse(body);
-                  var user_response = data['user-response'];
-                  var speechOutput = "<speak><p>" + user_response + "</p></speak>";
-                  var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                  callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+                  console.log(body);
+                  var data = body;
+                  var partyToUpdate = data['name'];
+                  var partyID = data['id'];
+                  var speechOutput = "<speak><p>" + partyToUpdate + " will be updated.</p></speak>";
                 });//RETURNS PARTY ID
 
 
               var url = {
                 url: host + route,
                 method: 'POST',
-                params: {
+                json: {
                   'name': partyName,
                   'party-id': partyID,
                   'threshold': 5,
@@ -121,7 +116,7 @@ function inSession(intent, session, callback) {
                   console.info("BODY: " + body);
                   var data = JSON.parse(body);
                   var user_response = data['user-response'];
-                  var speechOutput = "<speak><p>" + user_response + "</p></speak>";
+                  var speechOutput = "<speak><p>" + partyName + " was successfully updated.</p></speak>";
                   var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
                   callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
                 });
@@ -132,47 +127,48 @@ function inSession(intent, session, callback) {
               var route = "api/party";
               var songName = intent.slots.SongName.value;
               var partyName = intent.slots.PartyName.value;
+              console.log(partyName);
               //Getting Party-ID from server
+              /*
               var url = {
-                  url: host + route,
-                  method: 'GET',
-                  params: {
-                    'name': partyName
-                  }
+                  url: host + route
               };
+              console.log(url);
 
-              request(url, function(error, response, body) {
+              request.get(url, function(error, response, body) {
                   if (error !== null) {
                       console.error("ERROR: " + error);
                   }
-                  console.info("RESPONSE: " + response);
-                  console.info("BODY: " + body);
-                  var data = JSON.parse(body);
-                  var user_response = data['user-response'];
-                  var speechOutput = "<speak><p>" + user_response + "</p></speak>";
+                  var d = JSON.parse(body);
+                  console.log(d);
+                  console.log(body);
+                  var data = body;
+                  var partyID = data['id'];
+                  var speechOutput = "<speak><p>" + partyID + " is the party I D.</p></speak>";
                   var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                  callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+                  callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
                 });//RETURNS PARTY ID
 
-
+*/
               //Getting Song-ID from spotify
               var url = {
                   url: "https://api.spotify.com/v1/search",
-                  method: 'GET',
-                  params: {
+                  json: {
                     'q': songName,
                     'type': "track"
                   }
               };
-              request(url, function(error, response, body) {
+              request.get(url, function(error, response, body) {
                   if (error !== null) {
                       console.error("ERROR: " + error);
                   }
-                  console.info("RESPONSE: " + response);
-                  console.info("BODY: " + body);
-                  var data = JSON.parse(body);
-                  var user_response = data['user-response'];
-                  var speechOutput = "<speak><p>" + user_response + "</p></speak>";
+                  console.log(body);
+                  console.log(response);
+                  var data = body;
+                  console.log("just before songID");
+                  var songID = data['uri'];
+                  console.log("after songID");
+                  var speechOutput = "<speak><p></p></speak>";
                   var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
                   callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
                 });//RETURNS SONG ID
@@ -181,7 +177,7 @@ function inSession(intent, session, callback) {
               var url = {
                   url: host + route,
                   method: 'PUT',
-                  params: {
+                  json: {
                     'song-id' : songID,
                     'party-id': partyID
                   }
@@ -191,11 +187,9 @@ function inSession(intent, session, callback) {
                   if (error !== null) {
                       console.error("ERROR: " + error);
                   }
-                  console.info("RESPONSE: " + response);
-                  console.info("BODY: " + body);
-                  var data = JSON.parse(body);
-                  var user_response = data['user-response'];
-                  var speechOutput = "<speak><p>" + user_response + "</p></speak>";
+                  var data = body
+                  var songName = data[''];
+                  var speechOutput = "<speak><p>" + songName + "was successfully added to party " + partyName + "</p></speak>";
                   var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
                   callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
                 });
@@ -209,7 +203,7 @@ function inSession(intent, session, callback) {
                   var url = {
                       url: host + route,
                       method: 'GET',
-                      params: {
+                      json: {
                         'name': partyName
                       }
                   };
@@ -231,7 +225,7 @@ function inSession(intent, session, callback) {
                   var url = {
                       url: "https://api.spotify.com/v1/search",
                       method: 'GET',
-                      params: {
+                      json: {
                         'q': songName,
                         'type': "track"
                       }
@@ -253,7 +247,7 @@ function inSession(intent, session, callback) {
                   var url = {
                       url: host + route,
                       method: 'DELETE',
-                      params: {
+                      json: {
                         'song-id' : songID,
                         'party-id': partyID
                       }
@@ -269,7 +263,7 @@ function inSession(intent, session, callback) {
                       var user_response = data['user-response'];
                       var speechOutput = "<speak><p>" + user_response + "</p></speak>";
                       var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                      callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+                      callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
                     });
                   break;
 
@@ -281,7 +275,7 @@ function inSession(intent, session, callback) {
                       var url = {
                           url: host + route,
                           method: 'GET',
-                          params: {
+                          json: {
                             'name': partyName
                           }
                       };
@@ -303,7 +297,7 @@ function inSession(intent, session, callback) {
                       var url = {
                           url: "https://api.spotify.com/v1/search",
                           method: 'GET',
-                          params: {
+                          json: {
                             'q': songName,
                             'type': "track"
                           }
@@ -325,7 +319,7 @@ function inSession(intent, session, callback) {
                       var url = {
                           url: host + route,
                           method: 'POST',
-                          params: {
+                          json: {
                             'party-id': partyID,
                             'song-id': songID
                           }
@@ -341,7 +335,7 @@ function inSession(intent, session, callback) {
                           var user_response = data['user-response'];
                           var speechOutput = "<speak><p>" + user_response + "</p></speak>";
                           var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                          callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+                          callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
                         });
                       break;
 
@@ -354,7 +348,7 @@ function inSession(intent, session, callback) {
                         var url = {
                             url: host + route,
                             method: 'GET',
-                            params: {
+                            json: {
                               'name': partyName
                             }
                         };
@@ -376,7 +370,7 @@ function inSession(intent, session, callback) {
                         var url = {
                             url: "https://api.spotify.com/v1/search",
                             method: 'GET',
-                            params: {
+                            json: {
                               'q': songName,
                               'type': "track"
                             }
@@ -398,7 +392,7 @@ function inSession(intent, session, callback) {
                         var url = {
                             url: host + route,
                             method: 'POST',
-                            params: {
+                            json: {
                               'song-id': songID,
                               'party-id': partyID
                             }
@@ -414,7 +408,7 @@ function inSession(intent, session, callback) {
                             var user_response = data['user-response'];
                             var speechOutput = "<speak><p>" + user_response + "</p></speak>";
                             var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                            callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+                            callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
                           });
                         break;
 
@@ -426,55 +420,37 @@ function inSession(intent, session, callback) {
                           var url = {
                               url: host + route,
                               method: 'DELETE',
-                              params: {
+                              json: {
                                 'user-id': 1,
                                 'name': partyName,
                                 'threshold': 5
                               }
                           };
+                          console.log(partyName);
 
                           request(url, function(error, response, body) {
                               if (error !== null) {
                                   console.error("ERROR: " + error);
                               }
-                              console.info("RESPONSE: " + response);
-                              console.info("BODY: " + body);
-                              var data = JSON.parse(body);
-                              var user_response = data['user-response'];
-                              var speechOutput = "<speak><p>" + user_response + "</p></speak>";
-                              var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                              callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+                              console.log(body);
+                              var data = body;
+                              var partyName = data['name'];
+                              console.log(partyName);
+                              if(partyName !== null){
+                                var speechOutput = "<speak><p>" + partyName + " was successfully removed. </p></speak>";
+                                var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
+                                callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
+                              }
+                              else{
+                                var speechOutput = "<speak><p>Unable to find party.</p></speak>";
+                                var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
+                                callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
+                              }
                             });
                           break;
     }
 }
 
-function apiGetRequest(url, callback) {
-    console.log("Starting request to " + url.url);
-    request.get(url, function(error, response, body) {
-        callback(error, response, body);
-    });
-}
-
-function apiPostRequest(url, callback) {
-    console.log("Starting request to " + url.url);
-    request.post(url, function(error, response, body) {
-        callback(error, response, body);
-    });
-}
-
-function apiPutRequest(url, callback) {
-    request.put(url, function(error, response, body) {
-        callback(error, response, body);
-    });
-}
-
-function apiDeleteRequest(url, callback) {
-    console.log("Starting request to " + url.url);
-    request.delete(url, function(error, response, body) {
-        callback(error, response, body);
-    });
-}
 
 function onSessionStarted(sessionStartedRequest, session) {
     console.log(`onSessionStarted requestId=${sessionStartedRequest.requestId}, sessionId=${session.sessionId}`);

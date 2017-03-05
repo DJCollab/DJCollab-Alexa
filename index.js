@@ -50,6 +50,7 @@ function inSession(intent, session, callback) {
           var partyName = intent.slots.PartyName.value;
           var url = {
               url: "http://www.djcollab.com/api/party",
+              headers: {'Content-Type': 'application/x-www-form-urlencoded'},
               data: {
                 'user-id': 1,
                 'name': partyName,
@@ -75,11 +76,12 @@ function inSession(intent, session, callback) {
               var partyName = intent.slots.PartyName.value;
               var url = {
                   url: "http://www.djcollab.com/api/party",
+                  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                   data: {
                     'name': partyName
                   }
               };
-              apiGetRequest(url, fucntion(error, response, body) {
+              apiGetRequest(url, function(error, response, body) {
                 if(error !== null) {
                   console.error("ERROR: " + error);
                 }
@@ -88,6 +90,7 @@ function inSession(intent, session, callback) {
               });
               var url = {
                 url: "http://www.djcollab.com/api/party",
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                 data: {
                   'name': partyName,
                   'party-id': partyID,
@@ -118,11 +121,12 @@ function inSession(intent, session, callback) {
               //Getting Party-ID from server
               var url = {
                   url: "http://www.djcollab.com/api/party",
+                  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                   data: {
                     'name': partyName
                   }
               };
-              apiGetRequest(url, fucntion(error, response, body) {
+              apiGetRequest(url, function(error, response, body) {
                 if(error !== null) {
                   console.error("ERROR: " + error);
                 }
@@ -132,12 +136,13 @@ function inSession(intent, session, callback) {
               //Getting Song-ID from spotify
               var url = {
                   url: "https://api.spotify.com/v1/search",
+                  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                   data: {
                     'q': songName,
                     'type': "track"
                   }
               };
-              apiGetRequest(url, fucntion(error, response, body) {
+              apiGetRequest(url, function(error, response, body) {
                 if(error !== null) {
                   console.error("ERROR: " + error);
                 }
@@ -148,6 +153,7 @@ function inSession(intent, session, callback) {
 
               var url = {
                   url: "http://www.djcollab.com/api/party/song",
+                  headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                   data: {
                     'song-id' : songName,
                     'party-id': partyID
@@ -175,11 +181,12 @@ function inSession(intent, session, callback) {
                   //Getting Party-ID from server
                   var url = {
                       url: "http://www.djcollab.com/api/party",
+                      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                       data: {
                         'name': partyName
                       }
                   };
-                  apiGetRequest(url, fucntion(error, response, body) {
+                  apiGetRequest(url, function(error, response, body) {
                     if(error !== null) {
                       console.error("ERROR: " + error);
                     }
@@ -189,12 +196,13 @@ function inSession(intent, session, callback) {
                   //Getting Song-ID from spotify
                   var url = {
                       url: "https://api.spotify.com/v1/search",
+                      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                       data: {
                         'q': songName,
                         'type': "track"
                       }
                   };
-                  apiGetRequest(url, fucntion(error, response, body) {
+                  apiGetRequest(url, function(error, response, body) {
                     if(error !== null) {
                       console.error("ERROR: " + error);
                     }
@@ -205,6 +213,7 @@ function inSession(intent, session, callback) {
 
                   var url = {
                       url: "http://www.djcollab.com/api/party/song",
+                      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                       data: {
                         'song-id' : songName,
                         'party-id': partyID
@@ -232,11 +241,12 @@ function inSession(intent, session, callback) {
                       //Getting Party-ID from server
                       var url = {
                           url: "http://www.djcollab.com/api/party/up",
+                          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                           data: {
                             'name': partyName
                           }
                       };
-                      apiGetRequest(url, fucntion(error, response, body) {
+                      apiGetRequest(url, function(error, response, body) {
                         if(error !== null) {
                           console.error("ERROR: " + error);
                         }
@@ -248,12 +258,13 @@ function inSession(intent, session, callback) {
                       //Getting Song-ID from spotify
                       var url = {
                           url: "https://api.spotify.com/v1/search",
+                          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                           data: {
                             'q': songName,
                             'type': "track"
                           }
                       };
-                      apiGetRequest(url, fucntion(error, response, body) {
+                      apiGetRequest(url, function(error, response, body) {
                         if(error !== null) {
                           console.error("ERROR: " + error);
                         }
@@ -283,11 +294,12 @@ function inSession(intent, session, callback) {
                         //Getting Party-ID from server
                         var url = {
                             url: "http://www.djcollab.com/api/party/down",
+                            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                             data: {
                               'name': partyName
                             }
                         };
-                        apiGetRequest(url, fucntion(error, response, body) {
+                        apiGetRequest(url, function(error, response, body) {
                           if(error !== null) {
                             console.error("ERROR: " + error);
                           }
@@ -299,12 +311,13 @@ function inSession(intent, session, callback) {
                         //Getting Song-ID from spotify
                         var url = {
                             url: "https://api.spotify.com/v1/search",
+                            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                             data: {
                               'q': songName,
                               'type': "track"
                             }
                         };
-                        apiGetRequest(url, fucntion(error, response, body) {
+                        apiGetRequest(url, function(error, response, body) {
                           if(error !== null) {
                             console.error("ERROR: " + error);
                           }
@@ -332,6 +345,7 @@ function inSession(intent, session, callback) {
                           var partyName = intent.slots.PartyName.value;
                           var url = {
                               url: "http://www.djcollab.com/api/party",
+                              headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                               data: {
                                 'user-id': 1,
                                 'name': partyName,

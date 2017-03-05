@@ -11,7 +11,7 @@
           "slots":[
             {
                   "name": "PartyName",
-                  "type": "AMAZON.US_FIRST_NAME"
+                  "type": "AMAZON.MusicVenue"
             }
           ]
         },
@@ -20,7 +20,7 @@
           "slots":[
             {
               "name": "PartyName",
-              "type": "AMAZON.US_FIRST_NAME"
+              "type": "AMAZON.MusicVenue"
             }
           ]
         },
@@ -33,7 +33,7 @@
                 },
               	{
                   	"name": "PartyName",
-                    "type": "AMAZON.US_FIRST_NAME"
+                    "type": "AMAZON.MusicVenue"
                 }
             ]
         },
@@ -42,7 +42,7 @@
           "slots":[
             {
               "name": "PartyName",
-              "type": "AMAZON.US_FIRST_NAME"
+              "type": "AMAZON.MusicVenue"
             },
             {
               "name": "SongName",
@@ -55,7 +55,7 @@
           "slots":[
             {
               "name": "PartyName",
-              "type": "AMAZON.US_FIRST_NAME"
+              "type": "AMAZON.MusicVenue"
             },
             {
               "name": "SongName",
@@ -68,7 +68,7 @@
           "slots":[
             {
               "name": "PartyName",
-              "type": "AMAZON.US_FIRST_NAME"
+              "type": "AMAZON.MusicVenue"
             },
             {
               "name": "SongName",
@@ -81,7 +81,7 @@
           "slots": [
             {
               "name": "PartyName",
-              "type": "AMAZON.US_FIRST_NAME"
+              "type": "AMAZON.MusicVenue"
             }
           ]
         }

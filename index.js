@@ -45,6 +45,7 @@ function handleSessionEndRequest(callback) {
 }
 
 function inSession(intent, session, callback) {
+    var cardTitle = 'Party Raging';
     var host = "http://djcollab.com/";
     switch (intent.name) {
       case "CreateParty":
@@ -60,16 +61,18 @@ function inSession(intent, session, callback) {
               }
           };
 
-          
+
           request(url, function(error, response, body) {
               if (error !== null) {
                   console.error("ERROR: " + error);
               }
               console.info("RESPONSE: " + response);
-              console.info("BODY: " + body);
-              var data = JSON.parse(body);
-              var user_response = data['user-response'];
-              var speechOutput = "<speak><p>" + user_response + "</p></speak>";
+              console.log(body);
+              console.log(response.statusCode);
+              var data = body;
+              console.log(data['name']);
+              var confirmedParty = data['name'];
+              var speechOutput = "<speak><p>" + confirmedParty + "was successfully created.</p></speak>";
               var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
               callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
             });

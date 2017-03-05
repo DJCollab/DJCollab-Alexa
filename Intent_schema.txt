@@ -1,4 +1,4 @@
-{
+  {
     "intents": [
         {
             "intent": "AMAZON.ResumeIntent"
@@ -11,7 +11,7 @@
           "slots":[
             {
                   "name": "PartyName",
-                  "type": "AMAZON.MusicVenue"
+                  "type": "AMAZON.US_FIRST_NAME"
             }
           ]
         },
@@ -20,7 +20,7 @@
           "slots":[
             {
               "name": "PartyName",
-              "type": "AMAZON.MusicVenue"
+              "type": "AMAZON.US_FIRST_NAME"
             }
           ]
         },
@@ -33,7 +33,7 @@
                 },
               	{
                   	"name": "PartyName",
-                  	"type": "AMAZON.MusicVenue"
+                    "type": "AMAZON.US_FIRST_NAME"
                 }
             ]
         },
@@ -42,7 +42,7 @@
           "slots":[
             {
               "name": "PartyName",
-              "type": "AMAZON.MusicVenue"
+              "type": "AMAZON.US_FIRST_NAME"
             },
             {
               "name": "SongName",
@@ -55,7 +55,7 @@
           "slots":[
             {
               "name": "PartyName",
-              "type": "AMAZON.MusicVenue"
+              "type": "AMAZON.US_FIRST_NAME"
             },
             {
               "name": "SongName",
@@ -68,7 +68,7 @@
           "slots":[
             {
               "name": "PartyName",
-              "type": "AMAZON.MusicVenue"
+              "type": "AMAZON.US_FIRST_NAME"
             },
             {
               "name": "SongName",
@@ -81,7 +81,7 @@
           "slots": [
             {
               "name": "PartyName",
-              "type": "AMAZON.MusicVenue"
+              "type": "AMAZON.US_FIRST_NAME"
             }
           ]
         }

@@ -1,13 +1,13 @@
-CreateParty {PartyName}
+CreateParty create party {PartyName}
 
-UpdateParty {PartyName}
+UpdateParty update party {PartyName}
 
-AddSong {SongName} to {PartyName}
+AddSong add {SongName} to {PartyName}
 
-DeleteSong {SongName} to {PartyName}
+DeleteSong delete {SongName} from {PartyName}
 
-UpvoteSong {SongName} in {PartyName}
+UpvoteSong upvote {SongName} in {PartyName}
 
-DownvoteSong {SongName} in {PartyName}
+DownvoteSong downvote {SongName} in {PartyName}
 
-DeleteParty {PartyName}
+DeleteParty delete {PartyName}

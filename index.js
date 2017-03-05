@@ -55,7 +55,7 @@ function inSession(intent, session, callback) {
               }
           };
 
-          apiRequest(url, function(error, response, body) {
+          apiPutRequest(url, function(error, response, body) {
               if (error !== null) {
                   console.error("ERROR: " + error);
               }
@@ -78,7 +78,7 @@ function inSession(intent, session, callback) {
                   }
               };
 
-              apiRequest(url, function(error, response, body) {
+              apiPostRequest(url, function(error, response, body) {
                   if (error !== null) {
                       console.error("ERROR: " + error);
                   }
@@ -105,7 +105,7 @@ function inSession(intent, session, callback) {
                 }
             };
 
-            apiRequest(url, function(error, response, body) {
+            apiPutRequest(url, function(error, response, body) {
                 if (error !== null) {
                     console.error("ERROR: " + error);
                 }
@@ -131,7 +131,7 @@ function inSession(intent, session, callback) {
                     }
                 };
 
-                apiRequest(url, function(error, response, body) {
+                apiDeleteRequest(url, function(error, response, body) {
                     if (error !== null) {
                         console.error("ERROR: " + error);
                     }
@@ -157,7 +157,7 @@ function inSession(intent, session, callback) {
                         }
                     };
 
-                    apiRequest(url, function(error, response, body) {
+                    apiPostRequest(url, function(error, response, body) {
                         if (error !== null) {
                             console.error("ERROR: " + error);
                         }
@@ -184,7 +184,7 @@ function inSession(intent, session, callback) {
                             }
                         };
 
-                        apiRequest(url, function(error, response, body) {
+                        apiPostRequest(url, function(error, response, body) {
                             if (error !== null) {
                                 console.error("ERROR: " + error);
                             }
@@ -209,7 +209,7 @@ function inSession(intent, session, callback) {
                                 }
                             };
 
-                            apiRequest(url, function(error, response, body) {
+                            apiDeleteRequest(url, function(error, response, body) {
                                 if (error !== null) {
                                     console.error("ERROR: " + error);
                                 }
@@ -228,9 +228,23 @@ function inSession(intent, session, callback) {
     }
 }
 
-function apiRequest(url, callback) {
+function apiPostRequest(url, callback) {
     console.log("Starting request to " + url.url);
     request.post(url, function(error, response, body) {
+        callback(error, response, body);
+    });
+}
+
+function apiPutRequest(url, callback) {
+    console.log("Starting request to " + url.url);
+    request.put(url, function(error, response, body) {
+        callback(error, response, body);
+    });
+}
+
+function apiDeleteRequest(url, callback) {
+    console.log("Starting request to " + url.url);
+    request.delete(url, function(error, response, body) {
         callback(error, response, body);
     });
 }

@@ -50,8 +50,10 @@ function inSession(intent, session, callback) {
           var partyName = intent.slots.PartyName.value;
           var url = {
               url: "http://www.djcollab.com/api/party",
-              headers: {
-                'party_id': partyName
+              data: {
+                'user-id': 1,
+                'name': partyName,
+                'threshold': 5
               }
           };
 
@@ -73,9 +75,25 @@ function inSession(intent, session, callback) {
               var partyName = intent.slots.PartyName.value;
               var url = {
                   url: "http://www.djcollab.com/api/party",
-                  headers: {
-                    'party_id': partyName
+                  data: {
+                    'name': partyName
                   }
+              };
+              apiGetRequest(url, fucntion(error, response, body) {
+                if(error !== null) {
+                  console.error("ERROR: " + error);
+                }
+                var data = JSON.parse(body);
+                var partyID = data[0];
+              });
+              var url = {
+                url: "http://www.djcollab.com/api/party",
+                data: {
+                  'name': partyName,
+                  'party-id': partyID,
+                  'threshold': 5,
+                  'user-id': 1
+                }
               };
 
               apiPostRequest(url, function(error, response, body) {
@@ -95,94 +113,204 @@ function inSession(intent, session, callback) {
 
         case "AddSong":
 
-            var songName = intent.slots.SongName.value;
-            var partyName = intent.slots.PartyName.value;
-            var url = {
-                url: "http://www.djcollab.com/api/party/song",
-                headers: {
-                  'song_id' : songName,
-                  'party_id': partyName
+              var songName = intent.slots.SongName.value;
+              var partyName = intent.slots.PartyName.value;
+              //Getting Party-ID from server
+              var url = {
+                  url: "http://www.djcollab.com/api/party",
+                  data: {
+                    'name': partyName
+                  }
+              };
+              apiGetRequest(url, fucntion(error, response, body) {
+                if(error !== null) {
+                  console.error("ERROR: " + error);
                 }
-            };
-
-            apiPutRequest(url, function(error, response, body) {
-                if (error !== null) {
-                    console.error("ERROR: " + error);
-                }
-                console.info("RESPONSE: " + response);
-                console.info("BODY: " + body);
                 var data = JSON.parse(body);
-                var user_response = data['user-response'];
-                var speechOutput = "<speak><p>" + user_response + "</p></speak>";
-                var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
-                });
-            break;
+                var partyID = data[0];
+              });
+              //Getting Song-ID from spotify
+              var url = {
+                  url: "https://api.spotify.com/v1/search",
+                  data: {
+                    'q': songName,
+                    'type': "track"
+                  }
+              };
+              apiGetRequest(url, fucntion(error, response, body) {
+                if(error !== null) {
+                  console.error("ERROR: " + error);
+                }
+                var data = JSON.parse(body);
+                var songID = data[0];//NEED TO FIND A WAY TO GET JSUT THE SONG ID OUT OF THIS
+              });
+
+
+              var url = {
+                  url: "http://www.djcollab.com/api/party/song",
+                  data: {
+                    'song-id' : songName,
+                    'party-id': partyID
+                  }
+              };
+
+              apiPutRequest(url, function(error, response, body) {
+                  if (error !== null) {
+                      console.error("ERROR: " + error);
+                  }
+                  console.info("RESPONSE: " + response);
+                  console.info("BODY: " + body);
+                  var data = JSON.parse(body);
+                  var user_response = data['user-response'];
+                  var speechOutput = "<speak><p>" + user_response + "</p></speak>";
+                  var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
+                  callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+                  });
+              break;
 
             case "DeleteSong":
 
-                var songName = intent.slots.SongName.value;
-                var partyName = intent.slots.PartyName.value;
-                var url = {
-                    url: "http://www.djcollab.com/api/party/song",
-                    headers: {
-                      'song_id' : songName,
-                      'party_id': partyName
+                  var songName = intent.slots.SongName.value;
+                  var partyName = intent.slots.PartyName.value;
+                  //Getting Party-ID from server
+                  var url = {
+                      url: "http://www.djcollab.com/api/party",
+                      data: {
+                        'name': partyName
+                      }
+                  };
+                  apiGetRequest(url, fucntion(error, response, body) {
+                    if(error !== null) {
+                      console.error("ERROR: " + error);
                     }
-                };
-
-                apiDeleteRequest(url, function(error, response, body) {
-                    if (error !== null) {
-                        console.error("ERROR: " + error);
-                    }
-                    console.info("RESPONSE: " + response);
-                    console.info("BODY: " + body);
                     var data = JSON.parse(body);
-                    var user_response = data['user-response'];
-                    var speechOutput = "<speak><p>" + user_response + "</p></speak>";
-                    var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                    callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
-                    });
-                break;
+                    var partyID = data[0];
+                  });
+                  //Getting Song-ID from spotify
+                  var url = {
+                      url: "https://api.spotify.com/v1/search",
+                      data: {
+                        'q': songName,
+                        'type': "track"
+                      }
+                  };
+                  apiGetRequest(url, fucntion(error, response, body) {
+                    if(error !== null) {
+                      console.error("ERROR: " + error);
+                    }
+                    var data = JSON.parse(body);
+                    var songID = data[0];//NEED TO FIND A WAY TO GET JSUT THE SONG ID OUT OF THIS
+                  });
+
+
+                  var url = {
+                      url: "http://www.djcollab.com/api/party/song",
+                      data: {
+                        'song-id' : songName,
+                        'party-id': partyID
+                      }
+                  };
+
+                  apiDeleteRequest(url, function(error, response, body) {
+                      if (error !== null) {
+                          console.error("ERROR: " + error);
+                      }
+                      console.info("RESPONSE: " + response);
+                      console.info("BODY: " + body);
+                      var data = JSON.parse(body);
+                      var user_response = data['user-response'];
+                      var speechOutput = "<speak><p>" + user_response + "</p></speak>";
+                      var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
+                      callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+                      });
+                  break;
 
                 case "UpvoteSong":
 
-                    var songName = intent.slots.SongName.value;
-                    var partyName = intent.slots.PartyName.value;
-                    var url = {
-                        url: "http://www.djcollab.com/api/party/up",
-                        headers: {
-                          'song_id' : songName,
-                          'party_id': partyName
+                      var songName = intent.slots.SongName.value;
+                      var partyName = intent.slots.PartyName.value;
+                      //Getting Party-ID from server
+                      var url = {
+                          url: "http://www.djcollab.com/api/party/up",
+                          data: {
+                            'name': partyName
+                          }
+                      };
+                      apiGetRequest(url, fucntion(error, response, body) {
+                        if(error !== null) {
+                          console.error("ERROR: " + error);
                         }
-                    };
-
-                    apiPostRequest(url, function(error, response, body) {
-                        if (error !== null) {
-                            console.error("ERROR: " + error);
-                        }
-                        console.info("RESPONSE: " + response);
-                        console.info("BODY: " + body);
                         var data = JSON.parse(body);
-                        var user_response = data['user-response'];
-                        var speechOutput = "<speak><p>" + user_response + "</p></speak>";
-                        var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                        callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
-                        });
-                    break;
+                        var partyID = data[0];
+                      });
+
+
+                      //Getting Song-ID from spotify
+                      var url = {
+                          url: "https://api.spotify.com/v1/search",
+                          data: {
+                            'q': songName,
+                            'type': "track"
+                          }
+                      };
+                      apiGetRequest(url, fucntion(error, response, body) {
+                        if(error !== null) {
+                          console.error("ERROR: " + error);
+                        }
+                        var data = JSON.parse(body);
+                        var songID = data[0];//NEED TO FIND A WAY TO GET JSUT THE SONG ID OUT OF THIS
+                      });
+
+                      apiPostRequest(url, function(error, response, body) {
+                          if (error !== null) {
+                              console.error("ERROR: " + error);
+                          }
+                          console.info("RESPONSE: " + response);
+                          console.info("BODY: " + body);
+                          var data = JSON.parse(body);
+                          var user_response = data['user-response'];
+                          var speechOutput = "<speak><p>" + user_response + "</p></speak>";
+                          var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
+                          callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+                          });
+                      break;
 
 
                     case "DownvoteSong":
 
                         var songName = intent.slots.SongName.value;
                         var partyName = intent.slots.PartyName.value;
+                        //Getting Party-ID from server
                         var url = {
                             url: "http://www.djcollab.com/api/party/down",
-                            headers: {
-                              'song_id' : songName,
-                              'party_id': partyName
+                            data: {
+                              'name': partyName
                             }
                         };
+                        apiGetRequest(url, fucntion(error, response, body) {
+                          if(error !== null) {
+                            console.error("ERROR: " + error);
+                          }
+                          var data = JSON.parse(body);
+                          var partyID = data[0];
+                        });
+
+
+                        //Getting Song-ID from spotify
+                        var url = {
+                            url: "https://api.spotify.com/v1/search",
+                            data: {
+                              'q': songName,
+                              'type': "track"
+                            }
+                        };
+                        apiGetRequest(url, fucntion(error, response, body) {
+                          if(error !== null) {
+                            console.error("ERROR: " + error);
+                          }
+                          var data = JSON.parse(body);
+                          var songID = data[0];//NEED TO FIND A WAY TO GET JSUT THE SONG ID OUT OF THIS
+                        });
 
                         apiPostRequest(url, function(error, response, body) {
                             if (error !== null) {
@@ -200,32 +328,38 @@ function inSession(intent, session, callback) {
 
 
 
-                        case "DeleteParty":
-                            var partyName = intent.slots.PartyName.value;
-                            var url = {
-                                url: "http://www.djcollab.com/api/party",
-                                headers: {
-                                  'party_id': partyName
-                                }
-                            };
+                    case "DeleteParty":
+                          var partyName = intent.slots.PartyName.value;
+                          var url = {
+                              url: "http://www.djcollab.com/api/party",
+                              data: {
+                                'user-id': 1,
+                                'name': partyName,
+                                'threshold': 5
+                              }
+                          };
 
-                            apiDeleteRequest(url, function(error, response, body) {
-                                if (error !== null) {
-                                    console.error("ERROR: " + error);
-                                }
-                                console.info("RESPONSE: " + response);
-                                console.info("BODY: " + body);
-                                var data = JSON.parse(body);
-                                var user_response = data['user-response'];
-                                var speechOutput = "<speak><p>" + user_response + "</p></speak>";
-                                var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                                callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
-                                });
-                            break;
-
-
-
+                          apiDeleteRequest(url, function(error, response, body) {
+                              if (error !== null) {
+                                  console.error("ERROR: " + error);
+                              }
+                              console.info("RESPONSE: " + response);
+                              console.info("BODY: " + body);
+                              var data = JSON.parse(body);
+                              var user_response = data['user-response'];
+                              var speechOutput = "<speak><p>" + user_response + "</p></speak>";
+                              var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
+                              callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+                              });
+                          break;
     }
+}
+
+function apiGetRequest(url, callback) {
+    console.log("Starting request to " + url.url);
+    request.get(url, function(error, response, body) {
+        callback(error, response, body);
+    });
 }
 
 function apiPostRequest(url, callback) {

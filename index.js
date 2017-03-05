@@ -46,6 +46,53 @@ function handleSessionEndRequest(callback) {
 
 function inSession(intent, session, callback) {
     switch (intent.name) {
+      case "CreateParty":
+          var partyName = intent.slots.PartyName.value;
+          var url = {
+              url: "http://www.djcollab.com/api/party",
+              headers: {
+                'party_id': partyName
+              }
+          };
+
+          apiRequest(url, function(error, response, body) {
+              if (error !== null) {
+                  console.error("ERROR: " + error);
+              }
+              console.info("RESPONSE: " + response);
+              console.info("BODY: " + body);
+              var data = JSON.parse(body);
+              var user_response = data['user-response'];
+              var speechOutput = "<speak><p>" + user_response + "</p></speak>";
+              var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
+              callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+              });
+          break;
+
+          case "UpdateParty":
+              var partyName = intent.slots.PartyName.value;
+              var url = {
+                  url: "http://www.djcollab.com/api/party",
+                  headers: {
+                    'party_id': partyName
+                  }
+              };
+
+              apiRequest(url, function(error, response, body) {
+                  if (error !== null) {
+                      console.error("ERROR: " + error);
+                  }
+                  console.info("RESPONSE: " + response);
+                  console.info("BODY: " + body);
+                  var data = JSON.parse(body);
+                  var user_response = data['user-response'];
+                  var speechOutput = "<speak><p>" + user_response + "</p></speak>";
+                  var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
+                  callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+                  });
+              break;
+
+
         case "AddSong":
 
             var songName = intent.slots.SongName.value;
@@ -71,6 +118,113 @@ function inSession(intent, session, callback) {
                 callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
                 });
             break;
+
+            case "DeleteSong":
+
+                var songName = intent.slots.SongName.value;
+                var partyName = intent.slots.PartyName.value;
+                var url = {
+                    url: "http://www.djcollab.com/api/party/song",
+                    headers: {
+                      'song_id' : songName,
+                      'party_id': partyName
+                    }
+                };
+
+                apiRequest(url, function(error, response, body) {
+                    if (error !== null) {
+                        console.error("ERROR: " + error);
+                    }
+                    console.info("RESPONSE: " + response);
+                    console.info("BODY: " + body);
+                    var data = JSON.parse(body);
+                    var user_response = data['user-response'];
+                    var speechOutput = "<speak><p>" + user_response + "</p></speak>";
+                    var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
+                    callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+                    });
+                break;
+
+                case "UpvoteSong":
+
+                    var songName = intent.slots.SongName.value;
+                    var partyName = intent.slots.PartyName.value;
+                    var url = {
+                        url: "http://www.djcollab.com/api/party/up",
+                        headers: {
+                          'song_id' : songName,
+                          'party_id': partyName
+                        }
+                    };
+
+                    apiRequest(url, function(error, response, body) {
+                        if (error !== null) {
+                            console.error("ERROR: " + error);
+                        }
+                        console.info("RESPONSE: " + response);
+                        console.info("BODY: " + body);
+                        var data = JSON.parse(body);
+                        var user_response = data['user-response'];
+                        var speechOutput = "<speak><p>" + user_response + "</p></speak>";
+                        var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
+                        callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+                        });
+                    break;
+
+
+                    case "DownvoteSong":
+
+                        var songName = intent.slots.SongName.value;
+                        var partyName = intent.slots.PartyName.value;
+                        var url = {
+                            url: "http://www.djcollab.com/api/party/down",
+                            headers: {
+                              'song_id' : songName,
+                              'party_id': partyName
+                            }
+                        };
+
+                        apiRequest(url, function(error, response, body) {
+                            if (error !== null) {
+                                console.error("ERROR: " + error);
+                            }
+                            console.info("RESPONSE: " + response);
+                            console.info("BODY: " + body);
+                            var data = JSON.parse(body);
+                            var user_response = data['user-response'];
+                            var speechOutput = "<speak><p>" + user_response + "</p></speak>";
+                            var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
+                            callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+                            });
+                        break;
+
+
+
+                        case "DeleteParty":
+                            var partyName = intent.slots.PartyName.value;
+                            var url = {
+                                url: "http://www.djcollab.com/api/party",
+                                headers: {
+                                  'party_id': partyName
+                                }
+                            };
+
+                            apiRequest(url, function(error, response, body) {
+                                if (error !== null) {
+                                    console.error("ERROR: " + error);
+                                }
+                                console.info("RESPONSE: " + response);
+                                console.info("BODY: " + body);
+                                var data = JSON.parse(body);
+                                var user_response = data['user-response'];
+                                var speechOutput = "<speak><p>" + user_response + "</p></speak>";
+                                var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
+                                callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
+                                });
+                            break;
+
+
+
     }
 }
 

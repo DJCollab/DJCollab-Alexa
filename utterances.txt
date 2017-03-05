@@ -1,0 +1,13 @@
+CreateParty {PartyName}
+
+UpdateParty {PartyName}
+
+AddSong {SongName} to {PartyName}
+
+DeleteSong {SongName} to {PartyName}
+
+UpvoteSong {SongName} in {PartyName}
+
+DownvoteSong {SongName} in {PartyName}
+
+DeleteParty {PartyName}

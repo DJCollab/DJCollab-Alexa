@@ -1,0 +1,89 @@
+{
+    "intents": [
+        {
+            "intent": "AMAZON.ResumeIntent"
+        },
+        {
+            "intent": "AMAZON.PauseIntent"
+        },
+        {
+          "intent": "CreateParty",
+          "slots":[
+            {
+                  "name": "PartyName",
+                  "type": "AMAZON.MusicVenue"
+            }
+          ]
+        },
+        {
+          "intent": "UpdateParty",
+          "slots":[
+            {
+              "name": "PartyName",
+              "type": "AMAZON.MusicVenue"
+            }
+          ]
+        },
+        {
+            "intent": "AddSong",
+            "slots": [
+                {
+                    "name": "SongName",
+                    "type": "AMAZON.MusicRecording"
+                },
+              	{
+                  	"name": "PartyName",
+                  	"type": "AMAZON.MusicVenue"
+                }
+            ]
+        },
+        {
+          "intent": "DeleteSong",
+          "slots":[
+            {
+              "name": "PartyName",
+              "type": "AMAZON.MusicVenue"
+            },
+            {
+              "name": "SongName",
+              "type": "AMAZON.MusicRecording"
+            }
+          ]
+        },
+        {
+          "intent": "UpvoteSong",
+          "slots":[
+            {
+              "name": "PartyName",
+              "type": "AMAZON.MusicVenue"
+            },
+            {
+              "name": "SongName",
+              "type": "AMAZON.MusicRecording"
+            }
+          ]
+        },
+        {
+          "intent": "DownvoteSong",
+          "slots":[
+            {
+              "name": "PartyName",
+              "type": "AMAZON.MusicVenue"
+            },
+            {
+              "name": "SongName",
+              "type": "AMAZON.MusicRecording"
+            }
+          ]
+        },
+        {
+          "intent": "DeleteParty",
+          "slots": [
+            {
+              "name": "PartyName",
+              "type": "AMAZON.MusicVenue"
+            }
+          ]
+        }
+    ]
+}

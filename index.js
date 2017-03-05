@@ -74,251 +74,58 @@ function inSession(intent, session, callback) {
             });
           break;
 
-          case "UpdateParty":
-              var route = "api/party";
-              var partyName = intent.slots.PartyName.value;
-              var url = {
-                  url: host + route,
-                  method: 'GET',
-                  json:{
-                    'name': partyName
-                  }
-              };
-
-              request(url, function(error, response, body) {
-                  if (error !== null) {
-                      console.error("ERROR: " + error);
-                  }
-                  console.log(body);
-                  var data = body;
-                  var partyToUpdate = data['name'];
-                  var partyID = data['id'];
-                  var speechOutput = "<speak><p>" + partyToUpdate + " will be updated.</p></speak>";
-                });//RETURNS PARTY ID
-
-
-              var url = {
-                url: host + route,
-                method: 'POST',
-                json: {
-                  'name': partyName,
-                  'party-id': partyID,
-                  'threshold': 5,
-                  'user-id': 1
-                }
-              };
-
-              request(url, function(error, response, body) {
-                  if (error !== null) {
-                      console.error("ERROR: " + error);
-                  }
-                  console.info("RESPONSE: " + response);
-                  console.info("BODY: " + body);
-                  var data = JSON.parse(body);
-                  var user_response = data['user-response'];
-                  var speechOutput = "<speak><p>" + partyName + " was successfully updated.</p></speak>";
-                  var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                  callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
-                });
-              break;
-
 
         case "AddSong":
               var route = "api/party";
               var songName = intent.slots.SongName.value;
               var partyName = intent.slots.PartyName.value;
-              console.log(partyName);
               //Getting Party-ID from server
-              /*
+
               var url = {
-                  url: host + route
+                  url: host + route + '/?name=' + partyName,
               };
-              console.log(url);
 
               request.get(url, function(error, response, body) {
                   if (error !== null) {
                       console.error("ERROR: " + error);
                   }
-                  var d = JSON.parse(body);
-                  console.log(d);
-                  console.log(body);
-                  var data = body;
-                  var partyID = data['id'];
-                  var speechOutput = "<speak><p>" + partyID + " is the party I D.</p></speak>";
-                  var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                  callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
-                });//RETURNS PARTY ID
-
-*/
-              //Getting Song-ID from spotify
-              var url = {
-                  url: "https://api.spotify.com/v1/search",
-                  json: {
-                    'q': songName,
-                    'type': "track"
+                  var data = JSON.parse(body);
+                  console.log(data);
+                  var partyID = data.id;
+                  console.log(data.id);
+                  if(response.statusCode !== 200){
+                    var speechOutput = "<speak><p>Can't find party</p></speak>";
+                    var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
+                    callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
+                    return;
                   }
-              };
-              request.get(url, function(error, response, body) {
-                  if (error !== null) {
-                      console.error("ERROR: " + error);
-                  }
-                  console.log(body);
-                  console.log(response);
-                  var data = body;
-                  console.log("just before songID");
-                  var songID = data['uri'];
-                  console.log("after songID");
-                  var speechOutput = "<speak><p></p></speak>";
-                  var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                  callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
-                });//RETURNS SONG ID
-
-              route = "party/song";
-              var url = {
-                  url: host + route,
-                  method: 'PUT',
-                  json: {
-                    'song-id' : songID,
-                    'party-id': partyID
-                  }
-              };
-
-              request(url, function(error, response, body) {
-                  if (error !== null) {
-                      console.error("ERROR: " + error);
-                  }
-                  var data = body
-                  var songName = data[''];
-                  var speechOutput = "<speak><p>" + songName + "was successfully added to party " + partyName + "</p></speak>";
-                  var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                  callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
-                });
-              break;
-
-            case "DeleteSong":
-                  var route = "party";
-                  var songName = intent.slots.SongName.value;
-                  var partyName = intent.slots.PartyName.value;
-                  //Getting Party-ID from server
+                  console.log("FIRST REQUEST PASSED");
+                  var spotifyHost = "https://api.spotify.com/";
+                  var spotifyRoute = "v1/search";
                   var url = {
-                      url: host + route,
-                      method: 'GET',
-                      json: {
-                        'name': partyName
-                      }
+                      url: spotifyHost + spotifyRoute + "/?q=" + songName + "&type=track"
+
                   };
-                  request(url, function(error, response, body) {
+                  request.get(url, function(error, response, body) {
                       if (error !== null) {
                           console.error("ERROR: " + error);
                       }
-                      console.info("RESPONSE: " + response);
-                      console.info("BODY: " + body);
                       var data = JSON.parse(body);
-                      var user_response = data['user-response'];
-                      var speechOutput = "<speak><p>" + user_response + "</p></speak>";
-                      var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                      callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
-                    });//GETTING PARTY ID
-
-
-                  //Getting Song-ID from spotify
-                  var url = {
-                      url: "https://api.spotify.com/v1/search",
-                      method: 'GET',
-                      json: {
-                        'q': songName,
-                        'type': "track"
+                      var songID = data.tracks.items[0].uri;
+                      console.log(data.tracks.items[0].uri);
+                      if(response.statusCode !== 200){
+                        var speechOutput = "<speak><p>Can't find songID</p></speak>";
+                        var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
+                        callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
+                        return;
                       }
-                  };
-                  request(url, function(error, response, body) {
-                      if (error !== null) {
-                          console.error("ERROR: " + error);
-                      }
-                      console.info("RESPONSE: " + response);
-                      console.info("BODY: " + body);
-                      var data = JSON.parse(body);
-                      var user_response = data['user-response'];
-                      var speechOutput = "<speak><p>" + user_response + "</p></speak>";
-                      var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                      callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
-                    });//RETURNS SONG ID
-
-                  route = "party/song";
-                  var url = {
-                      url: host + route,
-                      method: 'DELETE',
-                      json: {
-                        'song-id' : songID,
-                        'party-id': partyID
-                      }
-                  };
-
-                  request(url, function(error, response, body) {
-                      if (error !== null) {
-                          console.error("ERROR: " + error);
-                      }
-                      console.info("RESPONSE: " + response);
-                      console.info("BODY: " + body);
-                      var data = JSON.parse(body);
-                      var user_response = data['user-response'];
-                      var speechOutput = "<speak><p>" + user_response + "</p></speak>";
-                      var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                      callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
-                    });
-                  break;
-
-                case "UpvoteSong":
-                      var route = "party/up";
-                      var songName = intent.slots.SongName.value;
-                      var partyName = intent.slots.PartyName.value;
-                      //Getting Party-ID from server
+                      console.log("SECOND REQUEST PASSED");
+                      console.log(songID);
+                      console.log(partyID);
+                      console.log("************************LOOOOOOOOOOOK HERE*****************")
                       var url = {
-                          url: host + route,
-                          method: 'GET',
-                          json: {
-                            'name': partyName
-                          }
-                      };
-                      request(url, function(error, response, body) {
-                          if (error !== null) {
-                              console.error("ERROR: " + error);
-                          }
-                          console.info("RESPONSE: " + response);
-                          console.info("BODY: " + body);
-                          var data = JSON.parse(body);
-                          var user_response = data['user-response'];
-                          var speechOutput = "<speak><p>" + user_response + "</p></speak>";
-                          var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                          callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
-                        });//RETURNS PARTY ID
-
-
-                      //Getting Song-ID from spotify
-                      var url = {
-                          url: "https://api.spotify.com/v1/search",
-                          method: 'GET',
-                          json: {
-                            'q': songName,
-                            'type': "track"
-                          }
-                      };
-                      request(url, function(error, response, body) {
-                          if (error !== null) {
-                              console.error("ERROR: " + error);
-                          }
-                          console.info("RESPONSE: " + response);
-                          console.info("BODY: " + body);
-                          var data = JSON.parse(body);
-                          var user_response = data['user-response'];
-                          var speechOutput = "<speak><p>" + user_response + "</p></speak>";
-                          var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                          callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
-                        });//RETURNS SONG ID
-
-
-                      var url = {
-                          url: host + route,
-                          method: 'POST',
+                          url: host + route + "/song",
+                          method: 'PUT',
                           json: {
                             'party-id': partyID,
                             'song-id': songID
@@ -329,125 +136,22 @@ function inSession(intent, session, callback) {
                           if (error !== null) {
                               console.error("ERROR: " + error);
                           }
-                          console.info("RESPONSE: " + response);
-                          console.info("BODY: " + body);
-                          var data = JSON.parse(body);
-                          var user_response = data['user-response'];
-                          var speechOutput = "<speak><p>" + user_response + "</p></speak>";
+                          console.log(body);
+                          console.log(response.statusCode);
+                          if(response.statusCode != 200){
+                            var speechOutput = "<speak><p>Can't add song to playlist</p></speak>";
+                            var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
+                            callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
+                            return;
+                          }
+
+                          var speechOutput = "<speak><p> Song was successfully added.</p></speak>";
                           var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
                           callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
                         });
-                      break;
-
-
-                    case "DownvoteSong":
-                        var route = "party/down";
-                        var songName = intent.slots.SongName.value;
-                        var partyName = intent.slots.PartyName.value;
-                        //Getting Party-ID from server
-                        var url = {
-                            url: host + route,
-                            method: 'GET',
-                            json: {
-                              'name': partyName
-                            }
-                        };
-                        request(url, function(error, response, body) {
-                            if (error !== null) {
-                                console.error("ERROR: " + error);
-                            }
-                            console.info("RESPONSE: " + response);
-                            console.info("BODY: " + body);
-                            var data = JSON.parse(body);
-                            var user_response = data['user-response'];
-                            var speechOutput = "<speak><p>" + user_response + "</p></speak>";
-                            var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                            callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
-                          });//RETURNS PARTYID
-
-
-                        //Getting Song-ID from spotify
-                        var url = {
-                            url: "https://api.spotify.com/v1/search",
-                            method: 'GET',
-                            json: {
-                              'q': songName,
-                              'type': "track"
-                            }
-                        };
-
-                        request(url, function(error, response, body) {
-                            if (error !== null) {
-                                console.error("ERROR: " + error);
-                            }
-                            console.info("RESPONSE: " + response);
-                            console.info("BODY: " + body);
-                            var data = JSON.parse(body);
-                            var user_response = data['user-response'];
-                            var speechOutput = "<speak><p>" + user_response + "</p></speak>";
-                            var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                            callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, false));
-                          });///RETURNS SONG ID
-
-                        var url = {
-                            url: host + route,
-                            method: 'POST',
-                            json: {
-                              'song-id': songID,
-                              'party-id': partyID
-                            }
-                        };
-
-                        request(url, function(error, response, body) {
-                            if (error !== null) {
-                                console.error("ERROR: " + error);
-                            }
-                            console.info("RESPONSE: " + response);
-                            console.info("BODY: " + body);
-                            var data = JSON.parse(body);
-                            var user_response = data['user-response'];
-                            var speechOutput = "<speak><p>" + user_response + "</p></speak>";
-                            var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                            callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
-                          });
-                        break;
-
-
-
-                    case "DeleteParty":
-                          var route = "api/party";
-                          var partyName = intent.slots.PartyName.value;
-                          var url = {
-                              url: host + route,
-                              method: 'DELETE',
-                              json: {
-                                'user-id': 1,
-                                'name': partyName,
-                                'threshold': 5
-                              }
-                          };
-                          console.log(partyName);
-
-                          request(url, function(error, response, body) {
-                              if (error !== null) {
-                                  console.error("ERROR: " + error);
-                              }
-                              console.log(body);
-                              var data = body;
-                              var partyName = data['name'];
-                              console.log(partyName);
-                              if(partyName !== null){
-                                var speechOutput = "<speak><p>" + partyName + " was successfully removed. </p></speak>";
-                                var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                                callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
-                              }
-                              else{
-                                var speechOutput = "<speak><p>Unable to find party.</p></speak>";
-                                var repromptText = "<speak>You can hear available commands by saying, help.</speak>";
-                                callback({}, buildSpeechletResponse(cardTitle, speechOutput, repromptText, true));
-                              }
-                            });
-                          break;
+                    });
+                });//RETURNS PARTY ID
+              break;
     }
 }
 

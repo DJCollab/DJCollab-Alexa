@@ -55,7 +55,6 @@ function inSession(intent, session, callback) {
                 headers: {
                   'song_id' : songName,
                   'party_id': partyName
-
                 }
             };
 
@@ -97,10 +96,10 @@ function onIntent(intentRequest, session, callback) {
     const intent = intentRequest.intent;
     const intentName = intentRequest.intent.name;
 
-    if (intentName === 'BeginGame' || intentName === 'EndGame' || intentName === 'PlayGame') {
+    if (intentName === 'AddSong') {
         inSession(intent, session, callback);
     } else {
-        callback({}, buildSpeechletResponse("Beocat Break In", "Invalid command, " + intentName, true));
+        callback({}, buildSpeechletResponse("DJ Collab", "Invalid command, " + intentName, true));
         throw new Error('Invalid intent');
     }
 }
@@ -111,10 +110,11 @@ function onSessionEnded(sessionEndedRequest, session) {
 
 exports.handler = (event, context, callback) => {
     try {
+      /*
         console.log('event.session.application.applicationId=${event.session.application.applicationId}');
         if (event.session.application.applicationId !== 'amzn1.ask.skill.25e6ef34-e26b-466b-85d3-7760e5dcdb97') {
             callback('Invalid Application ID');
-        }
+        }*/
         if (event.session.new) {
             onSessionStarted({
                 requestId: event.request.requestId
